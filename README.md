@@ -1,4 +1,4 @@
-# Le dockerfile qui a régléle problème httpuv
+# Partie 1 : Construire l'image Docker
 
 ```bash
 # Use the rocker/r-ver base image for R 4.1.2
@@ -46,7 +46,39 @@ Pour exécuter le container : sudo docker run -d -p 6378:6378 --name myshinyapp 
 
 Pour voir l'application en local : http://127.0.0.1:6378
 
+# Partie 2 : Pusher l'image Docker dans un Azure Container Registry 
 
+```yaml
+name: Azure Container Registry
 
+on:
+  push:
+    branches:
+      main
+      
+env:
+  IMAGE_NAME: myshinyappimg
+  
+jobs:
+  build:
+    name: Build container image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Log into registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.FST_ENDPOINT }}
+          username: ${{ secrets.FST_USERNAME }}
+          password: ${{ secrets.FST_PASSWORD }}
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: ${{ secrets.FST_ENDPOINT }}/${{ env.IMAGE_NAME }}
+```
+
+Il s'agit ici de créer un fichier yaml qui est une configuration de workflow GitHub Actions qui automatise le processus de création et de transfert d'une image Docker vers un Azure Container Registry à chaque fois qu'il y a un transfert vers la branche principale.
 
 
