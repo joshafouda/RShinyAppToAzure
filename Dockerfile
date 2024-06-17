@@ -1,6 +1,3 @@
-# Le dockerfile qui a régléle problème httpuv
-
-```bash
 # Use the rocker/r-ver base image for R 4.1.2
 FROM rocker/r-ver:4.1.2
 
@@ -38,15 +35,3 @@ EXPOSE 6378
 
 # Run the Shiny app on port 6378
 CMD ["R", "-e", "shiny::runApp('./app.R', host = '0.0.0.0', port = 6378)"]
-```
-
-Pour build l'image : sudo docker build -t myshinyappimg .
-
-Pour exécuter le container : sudo docker run -d -p 6378:6378 --name myshinyapp myshinyappimg:latest
-
-Pour voir l'application en local : http://127.0.0.1:6378
-
-
-
-
-
